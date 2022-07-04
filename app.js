@@ -26,20 +26,41 @@ const ItemCtrl = (function(){
         return{
             getItems: function(){
                 return data.items;
+            },
+        
+            addItem: function(name, calories){
+                //Create Id
+                let ID;
+                if(data.items.length > 0){
+                    ID = data.items[data.items.length -1].id +1;
+                }else{
+                    ID = 0;
+                }
+                //Calories to number
+                calories = parseInt(calories);
+
+                //Create new item
+                newItem = new Item(ID, name, calories);
+                //Add item to arry
+                data.items.push(newItem);
+                return newItem;
+            },
+        
+            logData: function(){
+                return data;
             }
-        }
-    return{
-        logData: function(){
-            return data;
-        }
     }
+
 })();
 
 
 //UI Controller
 const UICtrl = (function(){
     const UISelectors = {
-        itemList: '#item-list'
+        itemList: '#item-list',
+        addBtn: '.add-btn', 
+        itemNameInput: '#item-name',
+        itemCaloriesInput: '#item-calories'
     }
 
        //Public Methods
@@ -54,6 +75,17 @@ const UICtrl = (function(){
 
                 //Insert list items
                 document.querySelector(UISelectors.itemList).innerHTML = html;
+            }, 
+
+            getItemInput: function(){
+                return{
+                    name: document.querySelector(UISelectors.itemNameInput).value,
+                    calories: document.querySelector(UISelectors.itemCaloriesInput).value
+                }
+            },
+
+            getSelectors: function(){
+                return UISelectors;
             }
         }
 
@@ -76,6 +108,16 @@ const AppCtrl = (function(ItemCtrl, UICtrl){
 
     //Add item submit
     const itemAddSubmit = function(e){
+        
+        //Get form input from UI Controller
+        const input = UICtrl.getItemInput();
+        
+        //Check for name and calories input
+        if(input.name !== '' && input.calories !== ''){
+            //Add item
+            const newItem = ItemCtrl.addItem(input.name, input.calories);
+        }
+
         e.preventDefault();
     }
 
@@ -83,13 +125,16 @@ const AppCtrl = (function(ItemCtrl, UICtrl){
     //Public Methods
     return{
         init: function(){
-            console.log('Intializing the App....');
+            
 
             //Featch Items from Data Structure
             const items = ItemCtrl.getItems();
             
             //Populate List with items
             UICtrl.populateItemsList(items);
+
+            //Load Event Listiner
+            loadEventListeners();
 
 
         }
