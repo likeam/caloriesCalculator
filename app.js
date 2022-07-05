@@ -307,7 +307,6 @@ const AppCtrl = (function(ItemCtrl, UICtrl){
         
         //Get item input
         const input = UICtrl.getItemInput();
-
         //Update item
         const updateItem = ItemCtrl.updateItem(input.name, input.calories);
 
